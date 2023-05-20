@@ -2,17 +2,43 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
-    previewFeatures = ["jsonProtocol"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model User {
+  user_id         String  @id @default(cuid())
+  hashed_password String
+  first_name      String
+  dob_day         Int
+  dob_month       Int
+  dob_year        Int
+  show_gender     Boolean
+  gender_identity String
+  gender_interest String
+  email           String
+  profile_image   String
+  about           String
+  likes           User[]  @relation("likes")
+  likedBy         User[]  @relation("likes")
+  messages_sent Message[] @relation("MessagesSentFrom")
+  messages_received Message[] @relation("MessagesSentTo")
+}
+
+model Message {
+    id  String  @id @default(cuid())
+    timestamp   DateTime @default(now())
+    author   User @relation("MessagesSentFrom", fields: [authorId], references: [user_id])
+    authorId    String
+    recipient User @relation("MessagesSentTo", fields: [recipientId], references: [user_id])
+    recipientId String
+    message String
+
+    @@index([authorId])
+    @@index([recipientId])
 }
