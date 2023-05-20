@@ -33,10 +33,12 @@ const SignInForm = () => {
         />
       </div>
       {errors.password && <span>This field is required</span>}
-      <input
-        className="Inpercase cursor-pointer rounded-3xl border-2 border-neutral-500 bg-white px-7 py-3 text-base font-semibold text-neutral-500 hover:border-neutral-700 hover:text-neutral-700"
-        type="submit"
-      />
+      <div className="flex justify-center pt-2">
+        <input
+          className="Inpercase cursor-pointer rounded-3xl border-2 border-neutral-500 bg-white px-7 py-3 text-base font-semibold text-neutral-500 hover:border-neutral-700 hover:text-neutral-700"
+          type="submit"
+        />
+      </div>
     </form>
   );
 };

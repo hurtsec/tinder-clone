@@ -38,7 +38,7 @@ const SignUpForm = () => {
           type="password"
           autoComplete="false"
           placeholder="password"
-          className="p-2 text-lg border-neutral-500 border-2"
+          className="border-2 border-neutral-500 p-2 text-lg"
           {...register("password", {
             required: { value: true, message: "Password is required." },
             minLength: {
@@ -54,7 +54,7 @@ const SignUpForm = () => {
           type="password"
           autoComplete="false"
           placeholder="confirm password"
-          className="p-2 text-lg border-neutral-500 border-2"
+          className="border-2 border-neutral-500 p-2 text-lg"
           {...register("confirmPassword", {
             required: {
               value: true,
@@ -66,10 +66,12 @@ const SignUpForm = () => {
         />
       </div>
       {errors.confirmPassword && <span>{errors.confirmPassword.message}</span>}
-      <input
-        className="cursor-pointer rounded-3xl border-2 border-neutral-500 bg-white px-7 py-3 text-base font-semibold uppercase text-neutral-500 hover:border-neutral-700 hover:text-neutral-700"
-        type="submit"
-      />
+      <div className="flex justify-center pt-2">
+        <input
+          className="cursor-pointer rounded-3xl border-2 border-neutral-500 bg-white px-7 py-3 text-base font-semibold uppercase text-neutral-500 hover:border-neutral-700 hover:text-neutral-700"
+          type="submit"
+        />
+      </div>
     </form>
   );
 };
