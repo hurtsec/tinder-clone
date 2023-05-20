@@ -1,7 +1,11 @@
 import Image from "next/image";
 
-const Nav = (props: { minimal?: boolean; authToken?: boolean }) => {
-  const { minimal, authToken } = props;
+const Nav = (props: {
+  minimal?: boolean;
+  authToken?: boolean;
+  handleNavAuthButtonClicked: () => void;
+}) => {
+  const { minimal, authToken, handleNavAuthButtonClicked } = props;
 
   return (
     <nav className="flex w-full items-center justify-between p-4">
@@ -18,7 +22,10 @@ const Nav = (props: { minimal?: boolean; authToken?: boolean }) => {
         />
       </div>
       {!authToken && !minimal && (
-        <button className="rounded-xl border-none bg-white px-5 py-3 text-lg font-semibold text-red-700">
+        <button
+          onClick={handleNavAuthButtonClicked}
+          className="rounded-xl border-none bg-white px-5 py-3 text-lg font-semibold text-red-700"
+        >
           Log in
         </button>
       )}
