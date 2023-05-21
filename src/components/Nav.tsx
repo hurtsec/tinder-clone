@@ -2,10 +2,10 @@ import Image from "next/image";
 
 const Nav = (props: {
   minimal?: boolean;
-  authToken?: boolean;
   handleNavAuthButtonClicked: () => void;
 }) => {
-  const { minimal, authToken, handleNavAuthButtonClicked } = props;
+  const { minimal, handleNavAuthButtonClicked } = props;
+  const authToken = false;
 
   return (
     <nav className="flex w-full items-center justify-between p-4">

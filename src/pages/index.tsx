@@ -33,7 +33,6 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen w-full flex-col items-center bg-hero-pattern">
         <Nav
           minimal={false}
-          authToken={authToken}
           handleNavAuthButtonClicked={handleSignInButtonClick}
         />
         <section className="flex flex-grow flex-col items-center justify-center">

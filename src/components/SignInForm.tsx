@@ -20,8 +20,11 @@ const SignInForm = () => {
           type="email"
           placeholder="email"
           className="border-2 border-neutral-500 p-2 text-lg"
-          {...register("email", { required: true })}
+          {...register("email", {
+            required: { value: true, message: "Email is required." },
+          })}
         />
+        {errors.email && <span>{errors.email.message}</span>}
       </div>
       <div className="pb-2">
         <input
@@ -29,13 +32,15 @@ const SignInForm = () => {
           placeholder="password"
           autoComplete="false"
           className="border-2 border-neutral-500 p-2 text-lg"
-          {...register("password", { required: true })}
+          {...register("password", {
+            required: { value: true, message: "Password is required." },
+          })}
         />
       </div>
-      {errors.password && <span>This field is required</span>}
+      {errors.password && <span>{errors.password.message}</span>}
       <div className="flex justify-center pt-2">
         <input
-          className="Inpercase cursor-pointer rounded-3xl border-2 border-neutral-500 bg-white px-7 py-3 text-base font-semibold text-neutral-500 hover:border-neutral-700 hover:text-neutral-700"
+          className="cursor-pointer rounded-3xl border-2 border-neutral-500 bg-white px-7 py-3 text-base font-semibold uppercase text-neutral-500 hover:border-neutral-700 hover:text-neutral-700"
           type="submit"
         />
       </div>
