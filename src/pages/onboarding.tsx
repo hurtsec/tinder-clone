@@ -9,6 +9,7 @@ type Inputs = {
   show_gender: boolean;
   gender_identity: string;
   gender_interest: string;
+  about: string;
   profile_image: string;
 };
 
@@ -61,19 +62,53 @@ const Onboarding = () => {
                       value: true,
                       message: "Birth Day is required.",
                     },
+                    min: {
+                      value: 1,
+                      message: "Birth Day must be between 1-31.",
+                    },
+                    max: {
+                      value: 31,
+                      message: "Birth Day must be between 1-31.",
+                    },
                   })}
                 />
                 <input
                   className="w-3/12 rounded-xl border-2 border-neutral-300 px-7 py-4 text-base"
                   type="number"
-                  name="dob_month"
                   placeholder="MM"
+                  {...register("dob_month", {
+                    required: {
+                      value: true,
+                      message: "Birth Month is required",
+                    },
+                    min: {
+                      value: 1,
+                      message: "Birth Month must be between 1-12.",
+                    },
+                    max: {
+                      value: 12,
+                      message: "Birth Month must be between 1-12.",
+                    },
+                  })}
                 />
                 <input
                   className="w-3/12 rounded-xl border-2 border-neutral-300 px-7 py-4 text-base"
                   type="number"
-                  name="dob_year"
                   placeholder="YYYY"
+                  {...register("dob_year", {
+                    required: {
+                      value: true,
+                      message: "Birth Year is required.",
+                    },
+                    min: {
+                      value: 1000,
+                      message: "Birth Year must be 4 digits.",
+                    },
+                    max: {
+                      value: 9999,
+                      message: "Birth Year must be 4 digits.",
+                    },
+                  })}
                 />
               </div>
             </div>
@@ -85,9 +120,8 @@ const Onboarding = () => {
                     className="peer sr-only"
                     id="man-gender-identity"
                     type="radio"
-                    name="gender_identity"
                     value="man"
-                    checked={false}
+                    {...register("gender_identity")}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -101,9 +135,8 @@ const Onboarding = () => {
                     className="peer sr-only"
                     id="woman-gender-identity"
                     type="radio"
-                    name="gender_identity"
                     value="woman"
-                    checked={false}
+                    {...register("gender_identity")}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -117,9 +150,8 @@ const Onboarding = () => {
                     className="peer sr-only"
                     id="nonbinary-gender-identity"
                     type="radio"
-                    name="gender_identity"
                     value="nonbinary"
-                    checked={false}
+                    {...register("gender_identity")}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -137,8 +169,7 @@ const Onboarding = () => {
               <input
                 id="show-gender"
                 type="checkbox"
-                name="show_gender"
-                checked={false}
+                {...register("show_gender")}
               />
             </div>
             <div className="flex flex-col pb-3">
@@ -149,9 +180,8 @@ const Onboarding = () => {
                     className="peer sr-only"
                     id="man-gender-interest"
                     type="radio"
-                    name="gender_interest"
                     value="man"
-                    checked={false}
+                    {...register("gender_interest")}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -165,9 +195,8 @@ const Onboarding = () => {
                     className="peer sr-only"
                     id="woman-gender-interest"
                     type="radio"
-                    name="gender_interest"
                     value="woman"
-                    checked={false}
+                    {...register("gender_interest")}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -181,9 +210,8 @@ const Onboarding = () => {
                     className="peer sr-only"
                     id="everyone-gender-interest"
                     type="radio"
-                    name="gender_interest"
                     value="everyone"
-                    checked={false}
+                    {...register("gender_interest")}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -202,8 +230,14 @@ const Onboarding = () => {
                 className="rounded-xl border-2 border-neutral-300 px-7 py-4 text-base"
                 id="about"
                 type="text"
-                name="about"
                 placeholder="I like long walks..."
+                {...register("about", {
+                  required: { value: true, message: "Tell us about yourself." },
+                  maxLength: {
+                    value: 10000,
+                    message: "Limited to 10,000 characters.",
+                  },
+                })}
               />
             </div>
             <input
@@ -218,10 +252,19 @@ const Onboarding = () => {
               </label>
               <input
                 type="url"
-                name="profile_image"
                 id="profile-image"
                 placeholder="Photo URL"
                 className="rounded-xl border-2 border-neutral-300 px-7 py-4 text-base"
+                {...register("profile_image", {
+                  required: {
+                    value: true,
+                    message: "Please add a profile photo.",
+                  },
+                  maxLength: {
+                    value: 10000,
+                    message: "Limited to 10,000 characters.",
+                  },
+                })}
               />
             </div>
           </section>
