@@ -1,5 +1,6 @@
 import Nav from "~/components/Nav";
 import { type SubmitHandler, useForm } from "react-hook-form";
+import Image from "next/image";
 
 type Inputs = {
   first_name: string;
@@ -20,7 +21,8 @@ const Onboarding = () => {
     watch,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log("data >", data);
+  const profileImage = watch("profile_image");
   return (
     <>
       <Nav
@@ -29,7 +31,7 @@ const Onboarding = () => {
           return;
         }}
       />
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center border border-x-0 border-b-0 border-neutral-400">
         <h2 className="text-2xl font-bold uppercase italic">Create Account</h2>
         <form
           className="flex w-full justify-center"
@@ -111,6 +113,9 @@ const Onboarding = () => {
                   })}
                 />
               </div>
+              {errors.dob_day && <span>{errors.dob_day.message}</span>}
+              {errors.dob_month && <span>{errors.dob_month.message}</span>}
+              {errors.dob_year && <span>{errors.dob_year.message}</span>}
             </div>
             <div className="flex flex-col pb-3">
               <label className="pb-3 font-semibold">Gender</label>
@@ -121,7 +126,12 @@ const Onboarding = () => {
                     id="man-gender-identity"
                     type="radio"
                     value="man"
-                    {...register("gender_identity")}
+                    {...register("gender_identity", {
+                      required: {
+                        value: true,
+                        message: "Please select a gender identity.",
+                      },
+                    })}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -136,7 +146,12 @@ const Onboarding = () => {
                     id="woman-gender-identity"
                     type="radio"
                     value="woman"
-                    {...register("gender_identity")}
+                    {...register("gender_identity", {
+                      required: {
+                        value: true,
+                        message: "Please select a gender identity.",
+                      },
+                    })}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -151,7 +166,12 @@ const Onboarding = () => {
                     id="nonbinary-gender-identity"
                     type="radio"
                     value="nonbinary"
-                    {...register("gender_identity")}
+                    {...register("gender_identity", {
+                      required: {
+                        value: true,
+                        message: "Please select a gender identity.",
+                      },
+                    })}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -161,6 +181,9 @@ const Onboarding = () => {
                   </label>
                 </div>
               </div>
+              {errors.gender_identity && (
+                <span>{errors.gender_identity.message}</span>
+              )}
             </div>
             <div className="flex pb-3">
               <label className="font-semibold" htmlFor="show-gender">
@@ -181,7 +204,12 @@ const Onboarding = () => {
                     id="man-gender-interest"
                     type="radio"
                     value="man"
-                    {...register("gender_interest")}
+                    {...register("gender_interest", {
+                      required: {
+                        value: true,
+                        message: "Please select a gender interest.",
+                      },
+                    })}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -196,7 +224,12 @@ const Onboarding = () => {
                     id="woman-gender-interest"
                     type="radio"
                     value="woman"
-                    {...register("gender_interest")}
+                    {...register("gender_interest", {
+                      required: {
+                        value: true,
+                        message: "Please select a gender interest.",
+                      },
+                    })}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -211,7 +244,12 @@ const Onboarding = () => {
                     id="everyone-gender-interest"
                     type="radio"
                     value="everyone"
-                    {...register("gender_interest")}
+                    {...register("gender_interest", {
+                      required: {
+                        value: true,
+                        message: "Please select a gender interest.",
+                      },
+                    })}
                   />
                   <label
                     className="rounded-xl border-2 border-neutral-300 p-3 font-semibold transition-all peer-checked:border-red-700"
@@ -221,6 +259,9 @@ const Onboarding = () => {
                   </label>
                 </div>
               </div>
+              {errors.gender_interest && (
+                <span>{errors.gender_interest.message}</span>
+              )}
             </div>
             <div className="flex flex-col pb-3">
               <label className="pb-3 font-semibold" htmlFor="about">
@@ -239,6 +280,7 @@ const Onboarding = () => {
                   },
                 })}
               />
+              {errors.about && <span>{errors.about.message}</span>}
             </div>
             <input
               className="cursor-pointer rounded-lg border-2 border-neutral-300 bg-neutral-100 py-3 font-semibold hover:bg-neutral-200 active:bg-red-400"
@@ -265,6 +307,16 @@ const Onboarding = () => {
                     message: "Limited to 10,000 characters.",
                   },
                 })}
+              />
+              {errors.profile_image && (
+                <span>{errors.profile_image.message}</span>
+              )}
+            </div>
+            <div>
+              <img
+                className="w-full"
+                src={profileImage}
+                alt="Profile Image Preview"
               />
             </div>
           </section>
