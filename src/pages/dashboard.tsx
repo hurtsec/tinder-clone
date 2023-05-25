@@ -2,9 +2,9 @@ import ChatContainer from "~/components/ChatContainer";
 
 const Dashboard = () => {
   return (
-    <div className="flex justify-between">
+    <div className="flex gap-5">
       <ChatContainer />
-      <div className="flex w-8/12 flex-col items-center">
+      <div className="flex w-8/12 flex-grow flex-col items-center p-12">
         <div
           className="flex flex-col justify-end overflow-hidden rounded-2xl bg-white bg-cover bg-center shadow-2xl shadow-black"
           style={{
