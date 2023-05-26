@@ -1,5 +1,7 @@
+import { useRouter } from "next/router";
 import { useRef } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
+import { api } from "~/utils/api";
 
 type Inputs = {
   email: string;
@@ -7,38 +9,49 @@ type Inputs = {
   confirmPassword: string;
 };
 const SignUpForm = () => {
+  // const ctx = api.useContext();
+  const { mutate } = api.auth.createUser.useMutation({
+    onSuccess: () => console.log("success"),
+    onError: () => console.log("error"),
+  });
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log("data >", data);
     console.log("Make post request to save to db");
+    mutate(data);
+    await router.push("/onboarding");
   };
   const password = useRef({});
   password.current = watch("password", "");
 
   return (
-    <form className="flex flex-col py-2" onSubmit={handleSubmit(onSubmit)}>
-      <div className="pb-2">
+    <form
+      className="flex w-full flex-col py-2"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <div className="flex justify-center pb-2">
         <input
           type="email"
           placeholder="email"
-          className="border-2 border-neutral-500 p-2 text-lg"
+          className="w-10/12 border-2 border-neutral-500 p-2 text-lg"
           {...register("email", {
             required: { value: true, message: "Email is required." },
           })}
         />
       </div>
       {errors.email && <span>{errors.email.message}</span>}
-      <div className="pb-2">
+      <div className="flex justify-center pb-2">
         <input
           type="password"
           autoComplete="false"
           placeholder="password"
-          className="border-2 border-neutral-500 p-2 text-lg"
+          className="w-10/12 border-2 border-neutral-500 p-2 text-lg"
           {...register("password", {
             required: { value: true, message: "Password is required." },
             minLength: {
@@ -49,12 +62,12 @@ const SignUpForm = () => {
         />
       </div>
       {errors.password && <span>{errors.password.message}</span>}
-      <div className="pb-2">
+      <div className="flex justify-center pb-2">
         <input
           type="password"
           autoComplete="false"
           placeholder="confirm password"
-          className="border-2 border-neutral-500 p-2 text-lg"
+          className="w-10/12 border-2 border-neutral-500 p-2 text-lg"
           {...register("confirmPassword", {
             required: {
               value: true,

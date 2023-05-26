@@ -14,24 +14,27 @@ const SignInForm = () => {
   const onSubmit: SubmitHandler<Inputs> = (data) => console.log("data >", data);
 
   return (
-    <form className="flex flex-col py-2" onSubmit={handleSubmit(onSubmit)}>
-      <div className="pb-2">
+    <form
+      className="flex w-full flex-col py-2"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <div className="flex justify-center pb-2">
         <input
           type="email"
           placeholder="email"
-          className="border-2 border-neutral-500 p-2 text-lg"
+          className="w-10/12 border-2 border-neutral-500 p-2 text-lg"
           {...register("email", {
             required: { value: true, message: "Email is required." },
           })}
         />
         {errors.email && <span>{errors.email.message}</span>}
       </div>
-      <div className="pb-2">
+      <div className="flex justify-center pb-2">
         <input
           type="password"
           placeholder="password"
           autoComplete="false"
-          className="border-2 border-neutral-500 p-2 text-lg"
+          className="w-10/12 border-2 border-neutral-500 p-2 text-lg"
           {...register("password", {
             required: { value: true, message: "Password is required." },
           })}
