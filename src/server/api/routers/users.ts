@@ -8,20 +8,26 @@ import {
 } from "~/server/api/trpc";
 
 export const usersRouter = createTRPCRouter({
+  whoAmI: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findFirst({
+      where: { id: ctx.session.user.id },
+    });
+    return user;
+  }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     const users = await ctx.prisma.user.findMany();
     return {
       users,
     };
   }),
-  update: protectedProcedure
+  onboard: protectedProcedure
     .input(UserOnboarding)
     .mutation(async ({ ctx, input }) => {
       const { id: currentUserId } = ctx.session.user;
 
       const updatedUser = await ctx.prisma.user.update({
         where: { id: currentUserId },
-        data: input,
+        data: { ...input, onboarding_completed: true },
       });
 
       return updatedUser;

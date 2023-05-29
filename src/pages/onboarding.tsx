@@ -6,8 +6,10 @@ import { api } from "~/utils/api";
 import type { UserOnboardingInputs } from "~/common/validation/user";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const Onboarding = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -15,11 +17,25 @@ const Onboarding = () => {
     reset,
     formState: { errors },
   } = useForm<UserOnboardingInputs>();
-  const { mutate } = api.users.update.useMutation({
+  const { mutate } = api.users.onboard.useMutation({
     onSuccess: (data) => console.log("success", data),
     onError: () => console.log("error"),
   });
-  const { data: session, status } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
+  const { data: currentUser, status: currentUserStatus } =
+    api.users.whoAmI.useQuery();
+  const profileImage = watch("image");
+
+  useEffect(() => {
+    if (sessionStatus !== "loading" && session)
+      reset({ name: session.user.name || "", image: session.user.image || "" });
+  }, [sessionStatus, reset, session]);
+
+  useEffect(() => {
+    if (currentUserStatus !== "loading" && currentUser?.onboarding_completed)
+      void router.replace("/dashboard");
+  }, [currentUserStatus, currentUser, router]);
+
   const onSubmit: SubmitHandler<UserOnboardingInputs> = (data) => {
     const { dob_day, dob_month, dob_year } = data;
     mutate({
@@ -28,13 +44,8 @@ const Onboarding = () => {
       dob_month: parseInt(dob_month, 10),
       dob_year: parseInt(dob_year, 10),
     });
+    void router.replace("/dashboard");
   };
-  const profileImage = watch("image");
-
-  useEffect(() => {
-    if (status !== "loading" && session)
-      reset({ name: session.user.name || "", image: session.user.image || "" });
-  }, [status, reset, session]);
 
   return (
     <>
