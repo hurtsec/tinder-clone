@@ -1,7 +1,6 @@
 import Nav from "~/components/Nav";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import Image from "next/image";
-import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import type { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
 
 type Inputs = {
@@ -25,6 +24,7 @@ const Onboarding = () => {
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => console.log("data >", data);
   const profileImage = watch("profile_image");
+
   return (
     <>
       <Nav

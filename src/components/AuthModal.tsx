@@ -26,7 +26,7 @@ const AuthModal = (props: {
           Log in with Facebook
         </button> */}
         <button
-          onClick={() => signIn("github")}
+          onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
           className="mb-4 w-full rounded-full border-2 border-neutral-500 py-1 text-2xl font-bold text-neutral-500 hover:bg-neutral-800"
         >
           Log in with GitHub

@@ -25,7 +25,6 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    signIn: () => "/dashboard",
     jwt: ({ token, user }) => {
       if (user) {
         (token.id = user.id), (token.email = user.email);
@@ -41,8 +40,6 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   pages: {
     newUser: "/onboarding",
-    signIn: "/",
-    signOut: "/",
   },
 };
 
