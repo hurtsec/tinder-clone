@@ -1,6 +1,8 @@
 import Nav from "~/components/Nav";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import Image from "next/image";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { getServerAuthSession } from "~/server/auth";
 
 type Inputs = {
   first_name: string;
@@ -324,6 +326,14 @@ const Onboarding = () => {
       </div>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (
+  ctx: GetServerSidePropsContext
+) => {
+  const session = await getServerAuthSession(ctx);
+  if (!session) return { redirect: { destination: "/", permanent: false } };
+  return { props: { session } };
 };
 
 export default Onboarding;

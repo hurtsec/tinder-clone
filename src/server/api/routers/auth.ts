@@ -1,22 +1,22 @@
-import { z } from "zod";
 import * as bcrypt from "bcrypt";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import { signUpSchema } from "~/common/validation/auth";
 
 export const authRouter = createTRPCRouter({
   createUser: publicProcedure
-    .input(
-      z.object({
-        email: z.string(),
-        password: z.string(),
-        confirmPassword: z.string(),
-      })
-    )
+    .input(signUpSchema)
     .mutation(async ({ ctx, input }) => {
-      const hashedPassword: string = await bcrypt.hash(input.password, 10);
+      const { email, password, confirmPassword } = input;
+      if (password !== confirmPassword)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "The passwords entered do not match.",
+        });
+
       const existingUser = await ctx.prisma.user.findFirst({
-        where: { email: input.email },
+        where: { email },
       });
 
       // TODO handle this in a secure way that can't be used to enumerate registered users
@@ -25,7 +25,8 @@ export const authRouter = createTRPCRouter({
           code: "CONFLICT",
           message: "User with that email address already exists.",
         });
-      const userCreated = await ctx.prisma.user.create({
+      const hashedPassword: string = await bcrypt.hash(password, 10);
+      const createdUser = await ctx.prisma.user.create({
         data: {
           hashed_password: hashedPassword,
           about: "",
@@ -40,8 +41,6 @@ export const authRouter = createTRPCRouter({
           profile_image: "",
         },
       });
-      return {
-        greeting: `Hello ${input.email}`,
-      };
+      return createdUser;
     }),
 });
