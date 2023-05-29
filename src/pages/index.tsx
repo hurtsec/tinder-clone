@@ -1,4 +1,5 @@
 import { type NextPage } from "next";
+import { signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
 import AuthModal from "~/components/AuthModal";
@@ -7,9 +8,10 @@ import Nav from "~/components/Nav";
 const Home: NextPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
-  const authToken = false;
+  const { data: session } = useSession();
   const handleHRBButtonClick = () => {
     console.log("Clicked");
+    if (session) return signOut();
     setIsSignUp(true);
     setShowAuthModal(true);
   };
@@ -43,7 +45,7 @@ const Home: NextPage = () => {
             className="rounded-3xl border-none bg-gradient-to-bl from-orange-700 to-red-700 px-7 py-3 text-base uppercase text-white hover:from-red-700 hover:to-orange-700"
             onClick={handleHRBButtonClick}
           >
-            {authToken ? "Signout" : "Create Account"}
+            {session ? "Signout" : "Create Account"}
           </button>
           {showAuthModal && (
             <AuthModal

@@ -1,4 +1,5 @@
 import { XCircleIcon } from "@heroicons/react/24/outline";
+import { signIn } from "next-auth/react";
 
 const AuthModal = (props: {
   isSignUp: boolean;
@@ -21,11 +22,14 @@ const AuthModal = (props: {
           By clicking Log In, you agree to our terms. Learn how we process your
           data in our Privacy Policy and Cookie Policy.
         </p>
-        <button className="mb-4 w-full rounded-full border-2 border-neutral-500 py-1 text-2xl font-bold text-neutral-500 hover:bg-neutral-800">
+        {/* <button className="mb-4 w-full rounded-full border-2 border-neutral-500 py-1 text-2xl font-bold text-neutral-500 hover:bg-neutral-800">
           Log in with Facebook
-        </button>
-        <button className="mb-4 w-full rounded-full border-2 border-neutral-500 py-1 text-2xl font-bold text-neutral-500 hover:bg-neutral-800">
-          Log in with Email
+        </button> */}
+        <button
+          onClick={() => signIn("github")}
+          className="mb-4 w-full rounded-full border-2 border-neutral-500 py-1 text-2xl font-bold text-neutral-500 hover:bg-neutral-800"
+        >
+          Log in with GitHub
         </button>
         <div className="w-full pb-4 pt-4">
           <hr className="border-t-2 border-neutral-500" />

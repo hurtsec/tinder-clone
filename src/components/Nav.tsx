@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 
 const Nav = (props: {
@@ -5,7 +6,7 @@ const Nav = (props: {
   handleNavAuthButtonClicked: () => void;
 }) => {
   const { minimal, handleNavAuthButtonClicked } = props;
-  const authToken = false;
+  const { data: session } = useSession();
 
   return (
     <nav className="flex w-full items-center justify-between p-4">
@@ -21,7 +22,7 @@ const Nav = (props: {
           height={40}
         />
       </div>
-      {!authToken && !minimal && (
+      {!session && !minimal && (
         <button
           onClick={handleNavAuthButtonClicked}
           className="rounded-xl border-none bg-white px-5 py-3 text-lg font-semibold text-red-700"

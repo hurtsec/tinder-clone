@@ -1,14 +1,13 @@
-import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { loginSchema } from "~/common/validation/auth";
+import GitHubProvider from "next-auth/providers/github";
 import { prisma } from "~/server/db";
-import * as bcrypt from "bcrypt";
 import {
   type DefaultSession,
   type NextAuthOptions,
   getServerSession,
 } from "next-auth";
 import type { GetServerSidePropsContext } from "next";
+import { env } from "~/env.mjs";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -18,49 +17,15 @@ declare module "next-auth" {
   }
 }
 
-const compareHashAsyc = (plaintextPassword: string, hash: string) => {
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(plaintextPassword, hash, (err, res) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(res);
-      }
-    });
-  });
-};
-
 export const authOptions: NextAuthOptions = {
   providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: {
-          label: "Email",
-          type: "email",
-          placeholder: "Email Address",
-        },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        const creds = await loginSchema.parseAsync(credentials);
-        const user = await prisma.user.findFirst({
-          where: { email: creds.email },
-        });
-        if (!user) return null;
-        const isValidPassword = await compareHashAsyc(
-          creds.password,
-          user.hashed_password
-        );
-        if (!isValidPassword) return null;
-        return {
-          id: user.user_id,
-          email: user.email,
-        };
-      },
+    GitHubProvider({
+      clientId: env.GITHUB_ID,
+      clientSecret: env.GITHUB_SECRET,
     }),
   ],
   callbacks: {
+    signIn: () => "/dashboard",
     jwt: ({ token, user }) => {
       if (user) {
         (token.id = user.id), (token.email = user.email);
@@ -74,12 +39,10 @@ export const authOptions: NextAuthOptions = {
     }),
   },
   adapter: PrismaAdapter(prisma),
-  jwt: {
-    maxAge: 15 * 24 * 30 * 60,
-  },
   pages: {
-    signIn: "/",
     newUser: "/onboarding",
+    signIn: "/",
+    signOut: "/",
   },
 };
 

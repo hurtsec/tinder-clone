@@ -1,6 +1,9 @@
+import { useSession } from "next-auth/react";
 import ChatContainer from "~/components/ChatContainer";
 
 const Dashboard = () => {
+  const { status } = useSession({ required: true });
+  if (status === "loading") return <div></div>;
   return (
     <div className="flex gap-5">
       <ChatContainer />
