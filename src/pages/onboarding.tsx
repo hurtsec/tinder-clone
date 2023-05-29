@@ -2,28 +2,39 @@ import Nav from "~/components/Nav";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
-
-type Inputs = {
-  first_name: string;
-  dob_day: number;
-  dob_month: number;
-  dob_year: number;
-  show_gender: boolean;
-  gender_identity: string;
-  gender_interest: string;
-  about: string;
-  profile_image: string;
-};
+import { api } from "~/utils/api";
+import type { UserOnboardingInputs } from "~/common/validation/user";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const Onboarding = () => {
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log("data >", data);
-  const profileImage = watch("profile_image");
+  } = useForm<UserOnboardingInputs>();
+  const { mutate } = api.users.update.useMutation({
+    onSuccess: (data) => console.log("success", data),
+    onError: () => console.log("error"),
+  });
+  const { data: session, status } = useSession();
+  const onSubmit: SubmitHandler<UserOnboardingInputs> = (data) => {
+    const { dob_day, dob_month, dob_year } = data;
+    mutate({
+      ...data,
+      dob_day: parseInt(dob_day, 10),
+      dob_month: parseInt(dob_month, 10),
+      dob_year: parseInt(dob_year, 10),
+    });
+  };
+  const profileImage = watch("image");
+
+  useEffect(() => {
+    if (status !== "loading" && session)
+      reset({ name: session.user.name || "", image: session.user.image || "" });
+  }, [status, reset, session]);
 
   return (
     <>
@@ -41,18 +52,18 @@ const Onboarding = () => {
         >
           <section className="flex w-1/3 flex-col p-5">
             <div className="flex flex-col pb-3">
-              <label className="pb-3 font-semibold" htmlFor="first_name">
-                First Name
+              <label className="pb-3 font-semibold" htmlFor="name">
+                Name
               </label>
               <input
                 className="rounded-xl border-2 border-neutral-300 px-7 py-4 text-base"
                 type="text"
-                placeholder="First Name"
-                {...register("first_name", {
+                placeholder="Name"
+                {...register("name", {
                   required: { value: true, message: "Name is required." },
                 })}
               />
-              {errors.first_name && <span>{errors.first_name.message}</span>}
+              {errors.name && <span>{errors.name.message}</span>}
             </div>
             <div className="flex flex-col pb-3">
               <label className="pb-3 font-semibold">Birthday</label>
@@ -205,7 +216,7 @@ const Onboarding = () => {
                     className="peer sr-only"
                     id="man-gender-interest"
                     type="radio"
-                    value="man"
+                    value="men"
                     {...register("gender_interest", {
                       required: {
                         value: true,
@@ -225,7 +236,7 @@ const Onboarding = () => {
                     className="peer sr-only"
                     id="woman-gender-interest"
                     type="radio"
-                    value="woman"
+                    value="women"
                     {...register("gender_interest", {
                       required: {
                         value: true,
@@ -299,7 +310,7 @@ const Onboarding = () => {
                 id="profile-image"
                 placeholder="Photo URL"
                 className="rounded-xl border-2 border-neutral-300 px-7 py-4 text-base"
-                {...register("profile_image", {
+                {...register("image", {
                   required: {
                     value: true,
                     message: "Please add a profile photo.",
@@ -310,16 +321,16 @@ const Onboarding = () => {
                   },
                 })}
               />
-              {errors.profile_image && (
-                <span>{errors.profile_image.message}</span>
-              )}
+              {errors.image && <span>{errors.image.message}</span>}
             </div>
             <div>
-              <img
-                className="w-full"
-                src={profileImage}
-                alt="Profile Image Preview"
-              />
+              {profileImage && (
+                <img
+                  className="w-full"
+                  src={profileImage}
+                  alt="Profile Image Preview"
+                />
+              )}
             </div>
           </section>
         </form>
