@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "dob_day" DROP NOT NULL,
+ALTER COLUMN "dob_month" DROP NOT NULL,
+ALTER COLUMN "dob_year" DROP NOT NULL,
+ALTER COLUMN "show_gender" DROP NOT NULL,
+ALTER COLUMN "gender_identity" DROP NOT NULL,
+ALTER COLUMN "gender_interest" DROP NOT NULL,
+ALTER COLUMN "about" DROP NOT NULL;

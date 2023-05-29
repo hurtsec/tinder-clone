@@ -41,16 +41,16 @@ model User {
   id         String  @id @default(cuid())
   hashed_password String
   name      String?
-  dob_day         Int
-  dob_month       Int
-  dob_year        Int
-  show_gender     Boolean
-  gender_identity String
-  gender_interest String
+  dob_day         Int?
+  dob_month       Int?
+  dob_year        Int?
+  show_gender     Boolean?
+  gender_identity String?
+  gender_interest String?
   email           String? @unique
   emailVerified   DateTime?
   image   String?
-  about           String
+  about           String?
   accounts    Account[]
   sessions    Session[]
   likes           User[]  @relation("likes")
