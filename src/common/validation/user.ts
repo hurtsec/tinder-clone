@@ -1,31 +1,54 @@
 import { z } from "zod";
 import isAlphanumeric from "validator/lib/isAlphanumeric";
 
-enum GenderIdentity {
-  Man = "man",
-  Woman = "woman",
-  Nonbinary = "nonbinary",
-}
+export const genderInterests = {
+  men: "men",
+  women: "women",
+  everyone: "everyone",
+};
 
-enum GenderInterests {
-  Men = "men",
-  Women = "women",
-  Everyone = "everyone",
-}
+export const genderIdentities = {
+  man: "man",
+  woman: "woman",
+  nonbinary: "nonbinary",
+};
 
-export type UserOnboardingInputs = {
+export type User = {
+  id: string;
   name: string;
+  dob_day: number;
+  dob_month: number;
+  dob_year: number;
+  email: string;
+  emailVerified: Date;
+  show_gender: boolean;
+  gender_identity: string;
+  gender_interest: string;
+  about: string;
+  image: string;
+  likes: string[];
+  likedBy: string[];
+  messages_sent: string[];
+  messages_received: string[];
+};
+
+export type UserOnboardingInputs = Omit<
+  User,
+  | "id"
+  | "email"
+  | "emailVerified"
+  | "likes"
+  | "likedBy"
+  | "messages_sent"
+  | "messages_received"
+> & {
   dob_day: string;
   dob_month: string;
   dob_year: string;
-  show_gender: boolean;
-  gender_identity: GenderIdentity;
-  gender_interest: GenderInterests;
-  about: string;
-  image: string;
 };
 
-export const UserOnboarding = z.object({
+export const User = z.object({
+  id: z.string().cuid(),
   name: z
     .string()
     .min(1)
@@ -36,12 +59,28 @@ export const UserOnboarding = z.object({
   dob_day: z.number().min(1).max(31),
   dob_month: z.number().min(1).max(12),
   dob_year: z.number().min(1900).max(9999),
+  email: z.string().email(),
+  emailVerified: z.date(),
   show_gender: z.boolean(),
-  gender_identity: z.nativeEnum(GenderIdentity),
-  gender_interest: z.nativeEnum(GenderInterests),
+  gender_identity: z.enum(["man", "woman", "nonbinary"]),
+  gender_interest: z.enum(["men", "women", "everyone"]),
   about: z
     .string()
     .max(4096)
     .refine((val) => isAlphanumeric(val)),
   image: z.string().min(1).max(2048).url(),
+  likes: z.array(z.string().cuid()),
+  likedBy: z.array(z.string().cuid()),
+  messages_sent: z.array(z.string().cuid()),
+  messages_received: z.array(z.string().cuid()),
+});
+
+export const UserOnboarding = User.omit({
+  id: true,
+  email: true,
+  emailVerified: true,
+  likes: true,
+  likedBy: true,
+  messages_sent: true,
+  messages_received: true,
 });

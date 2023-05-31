@@ -1,15 +1,19 @@
+import type { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import ChatContainer from "~/components/ChatContainer";
 import { api } from "~/utils/api";
 
-const Dashboard = () => {
+const Dashboard = ({ currentUser }: { currentUser: User }) => {
   const router = useRouter();
-  const { status } = useSession({
+  useSession({
     required: true,
     onUnauthenticated: () => void router.replace("/"),
   });
-  const { data: currentUser } = api.users.whoAmI.useQuery();
+  const { data: usersGenderInterestOverlap, isLoading: isLoadingUsers } =
+    api.users.getByGenderInterests.useQuery();
+
+  console.log("usersGenderInterestOverlap :>> ", usersGenderInterestOverlap);
   return (
     <div className="flex gap-5">
       <ChatContainer user={currentUser} />

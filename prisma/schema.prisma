@@ -55,7 +55,7 @@ model User {
   accounts             Account[]
   sessions             Session[]
   likes                User[]    @relation("likes")
-  likedBy              User[]    @relation("likes")
+  likedBy             User[]    @relation("likes")
   messages_sent        Message[] @relation("MessagesSentFrom")
   messages_received    Message[] @relation("MessagesSentTo")
 }
