@@ -1,27 +1,39 @@
+import { useState } from "react";
 import ChatDisplay from "./ChatDisplay";
 import ChatHeader from "./ChatHeader";
 import MatchDisplay from "./MatchDisplay";
 import type { User } from "~/common/routerOutputs/userRouter";
 
 const ChatContainer = ({ user }: { user: User | undefined }) => {
+  const [messagesActiveTab, setMessagesActiveTab] = useState(false);
+
+  const handleMatchesClick = () => setMessagesActiveTab(false);
+  const handleMessagesClick = () => setMessagesActiveTab(true);
   return (
-    <div
-      className="z-10 h-screen w-1/3 max-w-sm"
-      style={{
-        boxShadow: "rgba(0,0,0,0.05) 0px 6px 24px 0px",
-      }}
-    >
-      <ChatHeader user={user} />
+    <div className="z-10 flex h-screen w-1/3 max-w-sm flex-col border-r border-neutral-700">
       <div>
-        <button className="border-b-4 border-b-red-700 bg-white p-2 text-lg font-semibold disabled:border-b-neutral-500">
-          Matches
-        </button>
-        <button className="border-b-4 border-b-red-700 bg-white p-2 text-lg font-semibold disabled:border-b-neutral-500">
-          Chat
-        </button>
+        <ChatHeader user={user} />
+        <div className="flex gap-4 px-4 py-3">
+          <button
+            onClick={handleMatchesClick}
+            className={`text-md ${
+              !messagesActiveTab ? "border-b-red-700" : "border-b-transparent"
+            } border-b-4 bg-transparent px-2 font-semibold text-neutral-200`}
+          >
+            Matches
+          </button>
+          <button
+            onClick={handleMessagesClick}
+            className={`text-md ${
+              messagesActiveTab ? "border-b-red-700" : "border-b-transparent"
+            } border-b-4 bg-transparent px-2 font-semibold text-neutral-200`}
+          >
+            Messages
+          </button>
+        </div>
+        <MatchDisplay />
       </div>
-      <MatchDisplay />
-      <ChatDisplay />
+      {messagesActiveTab && <ChatDisplay />}
     </div>
   );
 };

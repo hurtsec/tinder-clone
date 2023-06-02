@@ -8,7 +8,11 @@ export default {
         "hero-pattern":
           "linear-gradient(to bottom, rgba(0,0,0,0.65), rgba(0,0,0,0)), url('/images/tinder-hero.webp')",
       },
+      boxShadow: {
+        "center-lg": "0 0 8px rgb(0, 0, 0, 0.15)",
+      },
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
+  daisyui: { themes: ["black"] },
 } satisfies Config;
