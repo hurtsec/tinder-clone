@@ -11,6 +11,7 @@ export default {
       boxShadow: {
         "center-lg": "0 0 8px rgb(0, 0, 0, 0.15)",
       },
+      maxHeight: { "116": "40rem" },
     },
   },
   plugins: [require("daisyui")],

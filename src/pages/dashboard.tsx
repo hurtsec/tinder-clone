@@ -21,7 +21,7 @@ const Dashboard = ({ currentUser }: { currentUser: User }) => {
       <div className="flex w-8/12 flex-grow flex-col items-center justify-center p-12">
         <div>
           <div
-            className="flex flex-col justify-end overflow-hidden rounded-2xl bg-white bg-cover bg-center shadow-center-lg shadow-neutral-400"
+            className="flex flex-col justify-end overflow-hidden rounded-2xl bg-cover bg-center shadow-center-lg shadow-neutral-400"
             style={{
               backgroundImage: usersGenderInterestOverlap
                 ? `url(${usersGenderInterestOverlap[0]?.image || ""})`
