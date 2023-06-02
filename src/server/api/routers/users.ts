@@ -30,7 +30,7 @@ export const usersRouter = createTRPCRouter({
       users,
     };
   }),
-  getByGenderInterests: protectedProcedure.query(async ({ ctx, input }) => {
+  getByGenderInterests: protectedProcedure.query(async ({ ctx }) => {
     const whoAmI = await ctx.prisma.user.findFirst({
       where: { id: ctx.session.user.id },
     });

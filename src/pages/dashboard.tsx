@@ -1,4 +1,3 @@
-import type { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import ChatContainer from "~/components/ChatContainer";
@@ -6,7 +5,7 @@ import Dislike from "~/components/icons/Dislike";
 import Like from "~/components/icons/Like";
 import { api } from "~/utils/api";
 
-const Dashboard = ({ currentUser }: { currentUser: User }) => {
+const Dashboard = () => {
   const router = useRouter();
   useSession({
     required: true,
