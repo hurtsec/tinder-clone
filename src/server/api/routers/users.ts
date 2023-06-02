@@ -2,9 +2,9 @@ import type { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {
+  GenderIdentityEnum,
+  GenderInterestEnum,
   UserOnboarding,
-  genderIdentities,
-  genderInterests,
 } from "~/common/validation/user";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -47,22 +47,22 @@ export const usersRouter = createTRPCRouter({
       });
 
     const genderSought: Prisma.UserWhereInput = {};
-    if (gender_interest !== genderInterests.everyone) {
+    if (gender_interest !== GenderInterestEnum.enum.everyone) {
       genderSought.gender_identity =
-        gender_interest === genderInterests.men
-          ? genderIdentities.man
-          : genderIdentities.woman;
+        gender_interest === GenderInterestEnum.enum.men
+          ? GenderIdentityEnum.enum.man
+          : GenderIdentityEnum.enum.woman;
     }
 
     const genderIdentityToInterest: { gender_interest?: string }[] = [
-      { gender_interest: genderInterests.everyone },
+      { gender_interest: GenderInterestEnum.enum.everyone },
     ];
-    if (gender_identity !== genderIdentities.nonbinary)
+    if (gender_identity !== GenderIdentityEnum.enum.nonbinary)
       genderIdentityToInterest.push({
         gender_interest:
-          gender_identity === genderIdentities.man
-            ? genderInterests.men
-            : genderInterests.women,
+          gender_identity === GenderIdentityEnum.enum.man
+            ? GenderInterestEnum.enum.men
+            : GenderInterestEnum.enum.women,
       });
     const othersGenderInterest: Prisma.UserWhereInput = {
       OR: genderIdentityToInterest,

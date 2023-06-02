@@ -1,17 +1,8 @@
 import { z } from "zod";
 import isAlphanumeric from "validator/lib/isAlphanumeric";
 
-export const genderInterests = {
-  men: "men",
-  women: "women",
-  everyone: "everyone",
-};
-
-export const genderIdentities = {
-  man: "man",
-  woman: "woman",
-  nonbinary: "nonbinary",
-};
+export const GenderIdentityEnum = z.enum(["man", "woman", "nonbinary"]);
+export const GenderInterestEnum = z.enum(["men", "women", "everyone"]);
 
 export type User = {
   id: string;
@@ -22,8 +13,8 @@ export type User = {
   email: string;
   emailVerified: Date;
   show_gender: boolean;
-  gender_identity: string;
-  gender_interest: string;
+  gender_identity: z.infer<typeof GenderIdentityEnum>;
+  gender_interest: z.infer<typeof GenderInterestEnum>;
   about: string;
   image: string;
   likes: string[];
@@ -32,16 +23,15 @@ export type User = {
   messages_received: string[];
 };
 
-export type UserOnboardingInputs = Omit<
-  User,
-  | "id"
-  | "email"
-  | "emailVerified"
-  | "likes"
-  | "likedBy"
-  | "messages_sent"
-  | "messages_received"
-> & {
+export type UserOnboardingInputs = {
+  name: string;
+  email: string;
+  emailVerified: Date;
+  show_gender: boolean;
+  gender_identity: z.infer<typeof GenderIdentityEnum>;
+  gender_interest: z.infer<typeof GenderInterestEnum>;
+  about: string;
+  image: string;
   dob_day: string;
   dob_month: string;
   dob_year: string;
@@ -62,8 +52,8 @@ export const User = z.object({
   email: z.string().email(),
   emailVerified: z.date(),
   show_gender: z.boolean(),
-  gender_identity: z.enum(["man", "woman", "nonbinary"]),
-  gender_interest: z.enum(["men", "women", "everyone"]),
+  gender_identity: GenderIdentityEnum,
+  gender_interest: GenderInterestEnum,
   about: z
     .string()
     .max(4096)
