@@ -10,7 +10,7 @@ const ChatContainer = ({ user }: { user: User | undefined }) => {
   const handleMatchesClick = () => setMessagesActiveTab(false);
   const handleMessagesClick = () => setMessagesActiveTab(true);
   return (
-    <div className="z-10 flex h-screen w-1/3 max-w-sm flex-col border-r border-neutral-700">
+    <div className="z-10 flex h-screen w-1/3 max-w-sm flex-col border-r border-neutral-700 bg-neutral-900">
       <div>
         <ChatHeader user={user} />
         <div className="flex gap-4 px-4 py-3">
