@@ -5,13 +5,14 @@ import { api } from "~/utils/api";
 import {
   GenderIdentityEnum,
   GenderInterestEnum,
-  type UserOnboardingInputs,
+  UserOnboarding,
 } from "~/common/validation/user";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 import ChatContainer from "~/components/ChatContainer";
+import type { User } from "@prisma/client";
 
 const Onboarding = () => {
   const router = useRouter();
@@ -22,7 +23,7 @@ const Onboarding = () => {
     watch,
     reset,
     formState: { errors },
-  } = useForm<UserOnboardingInputs>();
+  } = useForm<User>();
   const { mutate } = api.users.onboard.useMutation({
     onSuccess: (data) => console.log("success", data),
     onError: () => console.log("error"),
@@ -43,14 +44,9 @@ const Onboarding = () => {
       void router.replace("/dashboard");
   }, [currentUserStatus, currentUser, router]);
 
-  const onSubmit: SubmitHandler<UserOnboardingInputs> = (data) => {
-    const { dob_day, dob_month, dob_year } = data;
-    mutate({
-      ...data,
-      dob_day: parseInt(dob_day, 10),
-      dob_month: parseInt(dob_month, 10),
-      dob_year: parseInt(dob_year, 10),
-    });
+  const onSubmit: SubmitHandler<User> = (data) => {
+    const validatedData = UserOnboarding.parse(data);
+    mutate(validatedData);
     void router.replace("/dashboard");
   };
 
@@ -101,6 +97,7 @@ const Onboarding = () => {
                           value: 31,
                           message: "Birth Day must be between 1-31.",
                         },
+                        valueAsNumber: true,
                       })}
                     />
                     <input
@@ -120,6 +117,7 @@ const Onboarding = () => {
                           value: 12,
                           message: "Birth Month must be between 1-12.",
                         },
+                        valueAsNumber: true,
                       })}
                     />
                     <input
@@ -139,6 +137,7 @@ const Onboarding = () => {
                           value: 9999,
                           message: "Birth Year must be 4 digits.",
                         },
+                        valueAsNumber: true,
                       })}
                     />
                   </div>
@@ -156,7 +155,7 @@ const Onboarding = () => {
                         className="peer sr-only"
                         id="man-gender-identity"
                         type="radio"
-                        value={GenderIdentityEnum.enum.man}
+                        value={GenderIdentityEnum.enum.MAN}
                         {...register("gender_identity", {
                           required: {
                             value: true,
@@ -176,7 +175,7 @@ const Onboarding = () => {
                         className="peer sr-only"
                         id="woman-gender-identity"
                         type="radio"
-                        value={GenderIdentityEnum.enum.woman}
+                        value={GenderIdentityEnum.enum.WOMAN}
                         {...register("gender_identity", {
                           required: {
                             value: true,
@@ -196,7 +195,7 @@ const Onboarding = () => {
                         className="peer sr-only"
                         id="nonbinary-gender-identity"
                         type="radio"
-                        value={GenderIdentityEnum.enum.nonbinary}
+                        value={GenderIdentityEnum.enum.NONBINARY}
                         {...register("gender_identity", {
                           required: {
                             value: true,
@@ -245,7 +244,7 @@ const Onboarding = () => {
                         className="peer sr-only"
                         id="man-gender-interest"
                         type="radio"
-                        value={GenderInterestEnum.enum.men}
+                        value={GenderInterestEnum.enum.MEN}
                         {...register("gender_interest", {
                           required: {
                             value: true,
@@ -265,7 +264,7 @@ const Onboarding = () => {
                         className="peer sr-only"
                         id="woman-gender-interest"
                         type="radio"
-                        value={GenderInterestEnum.enum.women}
+                        value={GenderInterestEnum.enum.WOMEN}
                         {...register("gender_interest", {
                           required: {
                             value: true,
@@ -285,7 +284,7 @@ const Onboarding = () => {
                         className="peer sr-only"
                         id="everyone-gender-interest"
                         type="radio"
-                        value={GenderInterestEnum.enum.everyone}
+                        value={GenderInterestEnum.enum.EVERYONE}
                         {...register("gender_interest", {
                           required: {
                             value: true,

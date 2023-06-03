@@ -45,8 +45,8 @@ model User {
   dob_month            Int?
   dob_year             Int?
   show_gender          Boolean?
-  gender_identity      String?
-  gender_interest      String?
+  gender_identity      Gender_Identity?
+  gender_interest      Gender_Interest?
   email                String?   @unique
   emailVerified        DateTime?
   image                String?
@@ -79,4 +79,16 @@ model Message {
 
   @@index([authorId])
   @@index([recipientId])
+}
+
+enum Gender_Identity {
+  MAN
+  WOMAN
+  NONBINARY
+}
+
+enum Gender_Interest {
+  MEN
+  WOMEN
+  EVERYONE
 }

@@ -1,27 +1,8 @@
 import { z } from "zod";
 import isAlphanumeric from "validator/lib/isAlphanumeric";
 
-export const GenderIdentityEnum = z.enum(["man", "woman", "nonbinary"]);
-export const GenderInterestEnum = z.enum(["men", "women", "everyone"]);
-
-export type User = {
-  id: string;
-  name: string;
-  dob_day: number;
-  dob_month: number;
-  dob_year: number;
-  email: string;
-  emailVerified: Date;
-  show_gender: boolean;
-  gender_identity: z.infer<typeof GenderIdentityEnum>;
-  gender_interest: z.infer<typeof GenderInterestEnum>;
-  about: string;
-  image: string;
-  likes: string[];
-  likedBy: string[];
-  messages_sent: string[];
-  messages_received: string[];
-};
+export const GenderIdentityEnum = z.enum(["MAN", "WOMAN", "NONBINARY"]);
+export const GenderInterestEnum = z.enum(["MEN", "WOMEN", "EVERYONE"]);
 
 export type UserOnboardingInputs = {
   name: string;
