@@ -29,6 +29,18 @@ const Dashboard = () => {
   const { data: whoAmI } = api.users.whoAmI.useQuery();
   const { data: usersGenderInterestOverlap } =
     api.users.getByGenderInterests.useQuery();
+  // TODO: Typescript doesn't recognize that because of the enabled flag that id
+  // will never be undefined here. The TRPC and Tanstack Query docs were unhelpful
+  // so until I can find a more elegant solution I'm including an empty
+  // string fallback which will never actually be passed through.
+  const { data: whoLikesMe } = api.match.whoLikesMe.useQuery(
+    { id: whoAmI?.id || "" },
+    { enabled: !!whoAmI?.id }
+  );
+  const { mutate: mutateLikes } = api.match.newLike.useMutation({
+    onSuccess: (data) => console.log("data :>> ", data),
+    onError: () => console.log("error"),
+  });
   const [usersToDisplay, setUsersToDisplay] = useState<User[]>([]);
 
   useEffect(() => {
@@ -39,7 +51,6 @@ const Dashboard = () => {
   }, [usersToDisplay]);
 
   useEffect(() => {
-    console.log("useEffect");
     if (usersGenderInterestOverlap?.length)
       setUsersToDisplay(usersGenderInterestOverlap);
   }, [usersGenderInterestOverlap]);
@@ -53,12 +64,15 @@ const Dashboard = () => {
   };
 
   const handleLike = (id: string) => {
+    if (whoLikesMe?.includes(id)) console.log("You matched!");
+    mutateLikes({ id });
     setUsersToDisplay((currentUsersDisplayed) => {
       return removeUserCard(currentUsersDisplayed, id);
     });
   };
 
   const handleDislike = (id: string) => {
+    if (whoLikesMe?.includes(id)) console.log("You missed a connection!");
     setUsersToDisplay((currentUsersDisplayed) => {
       return removeUserCard(currentUsersDisplayed, id);
     });
