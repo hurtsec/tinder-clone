@@ -4,7 +4,12 @@ import ChatHeader from "./ChatHeader";
 import MatchDisplay from "./MatchDisplay";
 import type { User } from "~/common/routerOutputs/userRouter";
 
-const ChatContainer = ({ user }: { user: User | undefined }) => {
+type Props = {
+  user: User;
+  matches?: User[];
+};
+
+const ChatContainer = ({ user, matches }: Props) => {
   const [messagesActiveTab, setMessagesActiveTab] = useState(false);
 
   const handleMatchesClick = () => setMessagesActiveTab(false);
@@ -31,7 +36,7 @@ const ChatContainer = ({ user }: { user: User | undefined }) => {
             Messages
           </button>
         </div>
-        <MatchDisplay />
+        {matches && <MatchDisplay matches={matches} />}
       </div>
       {messagesActiveTab && <ChatDisplay />}
     </div>

@@ -52,7 +52,7 @@ const Onboarding = () => {
 
   return (
     <div className="flex gap-5">
-      <ChatContainer user={whoAmI} />
+      {whoAmI && <ChatContainer user={whoAmI} />}
       <div className="flex h-screen w-full items-center justify-center">
         <div className="relative flex h-screen max-h-116 w-96 flex-col overflow-auto rounded-2xl shadow-center-lg shadow-neutral-400">
           <div className="flex w-full justify-center border-b border-neutral-700 bg-neutral-900 p-5">

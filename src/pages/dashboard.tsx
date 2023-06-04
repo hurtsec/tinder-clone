@@ -37,6 +37,7 @@ const Dashboard = () => {
     { id: whoAmI?.id || "" },
     { enabled: !!whoAmI?.id }
   );
+  const { data: matches } = api.match.getMatches.useQuery();
   const { mutate: mutateLikes } = api.match.newLike.useMutation({
     onSuccess: (data) => console.log("data :>> ", data),
     onError: () => console.log("error"),
@@ -79,7 +80,7 @@ const Dashboard = () => {
   };
   return (
     <div className="flex gap-5">
-      <ChatContainer user={whoAmI} />
+      {whoAmI && matches && <ChatContainer user={whoAmI} matches={matches} />}
       <div className="flex w-8/12 flex-grow flex-col items-center justify-center p-12">
         <div>
           {usersToDisplay.length > 0 ? (

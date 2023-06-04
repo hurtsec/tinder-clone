@@ -68,6 +68,16 @@ export const matchRouter = createTRPCRouter({
     });
     return usersGenderInterestsOverlap;
   }),
+  getMatches: protectedProcedure.query(async ({ ctx }) => {
+    const { id: currentUserId } = ctx.session.user;
+    const matches = await ctx.prisma.user.findMany({
+      where: {
+        likedBy: { some: { id: currentUserId } },
+        AND: [{ likes: { some: { id: currentUserId } } }],
+      },
+    });
+    return matches;
+  }),
   newLike: protectedProcedure
     .input(z.object({ id: z.string().cuid() }))
     .mutation(async ({ ctx, input }) => {
