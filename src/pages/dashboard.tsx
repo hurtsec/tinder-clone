@@ -28,7 +28,7 @@ const Dashboard = () => {
   });
   const { data: whoAmI } = api.users.whoAmI.useQuery();
   const { data: usersGenderInterestOverlap } =
-    api.users.getByGenderInterests.useQuery();
+    api.match.getPotentialMatches.useQuery();
   // TODO: Typescript doesn't recognize that because of the enabled flag that id
   // will never be undefined here. The TRPC and Tanstack Query docs were unhelpful
   // so until I can find a more elegant solution I'm including an empty
