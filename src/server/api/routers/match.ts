@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { Gender_Interest, Prisma } from "@prisma/client";
+import type { Gender_Interest, Prisma } from "@prisma/client";
 import {
   GenderIdentityEnum,
   GenderInterestEnum,
@@ -19,13 +19,16 @@ export const matchRouter = createTRPCRouter({
   getPotentialMatches: protectedProcedure.query(async ({ ctx }) => {
     const whoAmI = await ctx.prisma.user.findFirst({
       where: { id: ctx.session.user.id },
-      include: { likes: { select: { id: true } } },
+      include: {
+        likes: { select: { id: true } },
+        dislikes: { select: { id: true } },
+      },
     });
 
     if (!whoAmI)
       throw new TRPCError({ code: "UNAUTHORIZED", message: "User not found" });
 
-    const { gender_identity, gender_interest, likes } = whoAmI;
+    const { gender_identity, gender_interest, likes, dislikes } = whoAmI;
 
     if (!gender_identity || !gender_interest)
       throw new TRPCError({
@@ -60,9 +63,8 @@ export const matchRouter = createTRPCRouter({
         ...othersGenderInterest,
         AND: [
           genderSought,
-          {
-            id: { notIn: likes.map((user) => user.id) },
-          },
+          { id: { notIn: likes.map((user) => user.id) } },
+          { id: { notIn: dislikes.map((user) => user.id) } },
         ],
       },
     });
@@ -86,6 +88,18 @@ export const matchRouter = createTRPCRouter({
       const updatedUser = await ctx.prisma.user.update({
         where: { id: currentUserId },
         data: { likes: { connect: { id: input.id } } },
+      });
+
+      return updatedUser;
+    }),
+  newDislike: protectedProcedure
+    .input(z.object({ id: z.string().cuid() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id: currentUserId } = ctx.session.user;
+
+      const updatedUser = await ctx.prisma.user.update({
+        where: { id: currentUserId },
+        data: { dislikes: { connect: { id: input.id } } },
       });
 
       return updatedUser;

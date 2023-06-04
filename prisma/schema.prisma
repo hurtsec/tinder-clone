@@ -39,7 +39,7 @@ model Session {
 }
 
 model User {
-  id                   String    @id @default(cuid())
+  id                   String           @id @default(cuid())
   name                 String?
   dob_day              Int?
   dob_month            Int?
@@ -47,17 +47,19 @@ model User {
   show_gender          Boolean?
   gender_identity      Gender_Identity?
   gender_interest      Gender_Interest?
-  email                String?   @unique
+  email                String?          @unique
   emailVerified        DateTime?
   image                String?
   about                String?
   onboarding_completed Boolean?
   accounts             Account[]
   sessions             Session[]
-  likes                User[]    @relation("likes")
-  likedBy             User[]    @relation("likes")
-  messages_sent        Message[] @relation("MessagesSentFrom")
-  messages_received    Message[] @relation("MessagesSentTo")
+  dislikes             User[]           @relation("dislikes")
+  dislikedBy           User[]           @relation("dislikes")
+  likes                User[]           @relation("likes")
+  likedBy              User[]           @relation("likes")
+  messages_sent        Message[]        @relation("MessagesSentFrom")
+  messages_received    Message[]        @relation("MessagesSentTo")
 }
 
 model VerificationToken {

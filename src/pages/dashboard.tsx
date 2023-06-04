@@ -47,6 +47,12 @@ const Dashboard = () => {
     },
     onError: () => console.log("error"),
   });
+  const { mutate: mutateDislikes } = api.match.newDislike.useMutation({
+    onSuccess: (data) => {
+      console.log("disliked", data);
+    },
+    onError: () => console.log("error"),
+  });
   const { mutate: mutateResetLikes } = api.match.resetMatches.useMutation({
     onSuccess: () => {
       void refetchMatches();
@@ -87,6 +93,7 @@ const Dashboard = () => {
 
   const handleDislike = (id: string) => {
     if (whoLikesMe?.includes(id)) console.log("You missed a connection!");
+    mutateDislikes({ id });
     setUsersToDisplay((currentUsersDisplayed) => {
       return removeUserCard(currentUsersDisplayed, id);
     });
