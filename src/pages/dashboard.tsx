@@ -21,6 +21,7 @@ const cacheImages = async (srcArray: string[]) => {
 };
 
 const Dashboard = () => {
+  const { match: matchUtils } = api.useContext();
   const router = useRouter();
   useSession({
     required: true,
@@ -40,13 +41,17 @@ const Dashboard = () => {
   const { data: matches, refetch: refetchMatches } =
     api.match.getMatches.useQuery();
   const { mutate: mutateLikes } = api.match.newLike.useMutation({
-    onSuccess: (data) => console.log("data :>> ", data),
+    onSuccess: (data) => {
+      console.log("liked :>> ", data);
+      void refetchMatches();
+    },
     onError: () => console.log("error"),
   });
   const { mutate: mutateResetLikes } = api.match.resetMatches.useMutation({
     onSuccess: () => {
-      console.log("reset likes");
       void refetchMatches();
+      setUsersToDisplay([]);
+      void matchUtils.getPotentialMatches.reset();
       void refetchPotentialMatches();
     },
     onError: () => console.log("error"),

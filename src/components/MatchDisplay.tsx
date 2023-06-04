@@ -2,7 +2,7 @@ import type { User } from "@prisma/client";
 
 const MatchDisplay = ({ matches }: { matches: User[] }) => {
   return (
-    <div className="flex flex-wrap justify-between gap-y-4 p-4">
+    <div className="flex flex-wrap gap-x-7 gap-y-4 p-4">
       {matches.map((user) => (
         <div
           key={user.id}
