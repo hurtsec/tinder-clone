@@ -109,7 +109,7 @@ export const matchRouter = createTRPCRouter({
 
     const updatedUser = await ctx.prisma.user.update({
       where: { id: currentUserId },
-      data: { likes: { set: [] } },
+      data: { likes: { set: [] }, dislikes: { set: [] } },
     });
 
     return updatedUser;
