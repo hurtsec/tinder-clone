@@ -3,9 +3,22 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import type { User } from "@prisma/client";
 import ChatContainer from "~/components/ChatContainer";
-import Dislike from "~/components/icons/Dislike";
-import Like from "~/components/icons/Like";
 import { api } from "~/utils/api";
+import UserCard from "~/components/UserCard";
+import EmptyUserCard from "~/components/EmptyUserCard";
+
+const cacheImages = async (srcArray: string[]) => {
+  const promises = srcArray.map((src) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = resolve;
+      img.onerror = reject;
+    });
+  });
+
+  await Promise.all(promises);
+};
 
 const Dashboard = () => {
   const router = useRouter();
@@ -19,50 +32,55 @@ const Dashboard = () => {
   const [usersToDisplay, setUsersToDisplay] = useState<User[]>([]);
 
   useEffect(() => {
+    if (!usersToDisplay.length) return;
+    const userSrcs = usersToDisplay.map((user: User) => user.image || "");
+    if (!userSrcs.length) return;
+    void cacheImages(userSrcs);
+  }, [usersToDisplay]);
+
+  useEffect(() => {
+    console.log("useEffect");
     if (usersGenderInterestOverlap?.length)
       setUsersToDisplay(usersGenderInterestOverlap);
   }, [usersGenderInterestOverlap]);
 
+  const removeUserCard = (currentUsersDisplayed: User[], id: string) => {
+    const newArr = [...currentUsersDisplayed];
+    const userIndexToRemove = newArr.findIndex((user) => user.id === id);
+    if (userIndexToRemove === -1) return currentUsersDisplayed;
+    newArr.splice(userIndexToRemove, 1);
+    return newArr;
+  };
+
   const handleLike = (id: string) => {
-    const userIndexToRemove = usersGenderInterestOverlap?.findIndex(
-      (user) => user.id === id
-    );
+    setUsersToDisplay((currentUsersDisplayed) => {
+      return removeUserCard(currentUsersDisplayed, id);
+    });
+  };
+
+  const handleDislike = (id: string) => {
+    setUsersToDisplay((currentUsersDisplayed) => {
+      return removeUserCard(currentUsersDisplayed, id);
+    });
   };
   return (
     <div className="flex gap-5">
       <ChatContainer user={whoAmI} />
       <div className="flex w-8/12 flex-grow flex-col items-center justify-center p-12">
         <div>
-          {usersGenderInterestOverlap &&
-            usersGenderInterestOverlap.map((user, i) => (
-              <div
+          {usersToDisplay.length > 0 ? (
+            usersToDisplay.map((user, i) => (
+              <UserCard
                 key={user.id}
-                className={`flex flex-col justify-end overflow-hidden rounded-2xl bg-cover bg-center shadow-center-lg shadow-neutral-400 ${
-                  i !== 0 ? "hidden" : ""
-                }`}
-                style={{
-                  backgroundImage: `url(${user.image || ""})`,
-                  width: "400px",
-                  height: "650px",
-                }}
-              >
-                <div className="bg-gradient-to-b from-transparent to-black p-4">
-                  <h3 className="text-3xl font-bold text-white">
-                    {user.name}
-                    &nbsp;
-                    <span className="text-2xl font-normal">72</span>
-                  </h3>
-                </div>
-                <div className="flex justify-between bg-black px-10 py-3">
-                  <button className="rounded-full border border-red-500 bg-transparent p-3 text-red-500">
-                    <Dislike />
-                  </button>
-                  <button className="rounded-full border border-green-500 bg-transparent p-3 text-green-500">
-                    <Like />
-                  </button>
-                </div>
-              </div>
-            ))}
+                user={user}
+                hidden={i !== 0}
+                handleDislike={handleDislike}
+                handleLike={handleLike}
+              />
+            ))
+          ) : (
+            <EmptyUserCard />
+          )}
         </div>
       </div>
     </div>
