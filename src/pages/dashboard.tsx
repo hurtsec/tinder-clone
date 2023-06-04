@@ -27,7 +27,7 @@ const Dashboard = () => {
     onUnauthenticated: () => void router.replace("/"),
   });
   const { data: whoAmI } = api.users.whoAmI.useQuery();
-  const { data: usersGenderInterestOverlap } =
+  const { data: potentialMatches, refetch: refetchPotentialMatches } =
     api.match.getPotentialMatches.useQuery();
   // TODO: Typescript doesn't recognize that because of the enabled flag that id
   // will never be undefined here. The TRPC and Tanstack Query docs were unhelpful
@@ -37,9 +37,18 @@ const Dashboard = () => {
     { id: whoAmI?.id || "" },
     { enabled: !!whoAmI?.id }
   );
-  const { data: matches } = api.match.getMatches.useQuery();
+  const { data: matches, refetch: refetchMatches } =
+    api.match.getMatches.useQuery();
   const { mutate: mutateLikes } = api.match.newLike.useMutation({
     onSuccess: (data) => console.log("data :>> ", data),
+    onError: () => console.log("error"),
+  });
+  const { mutate: mutateResetLikes } = api.match.resetMatches.useMutation({
+    onSuccess: () => {
+      console.log("reset likes");
+      void refetchMatches();
+      void refetchPotentialMatches();
+    },
     onError: () => console.log("error"),
   });
   const [usersToDisplay, setUsersToDisplay] = useState<User[]>([]);
@@ -52,9 +61,8 @@ const Dashboard = () => {
   }, [usersToDisplay]);
 
   useEffect(() => {
-    if (usersGenderInterestOverlap?.length)
-      setUsersToDisplay(usersGenderInterestOverlap);
-  }, [usersGenderInterestOverlap]);
+    if (potentialMatches?.length) setUsersToDisplay(potentialMatches);
+  }, [potentialMatches]);
 
   const removeUserCard = (currentUsersDisplayed: User[], id: string) => {
     const newArr = [...currentUsersDisplayed];
@@ -78,6 +86,8 @@ const Dashboard = () => {
       return removeUserCard(currentUsersDisplayed, id);
     });
   };
+
+  const handleResetLikes = () => mutateResetLikes();
   return (
     <div className="flex gap-5">
       {whoAmI && matches && <ChatContainer user={whoAmI} matches={matches} />}
@@ -94,7 +104,7 @@ const Dashboard = () => {
               />
             ))
           ) : (
-            <EmptyUserCard />
+            <EmptyUserCard onResetLikes={handleResetLikes} />
           )}
         </div>
       </div>

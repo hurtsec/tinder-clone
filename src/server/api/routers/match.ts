@@ -90,4 +90,14 @@ export const matchRouter = createTRPCRouter({
 
       return updatedUser;
     }),
+  resetMatches: protectedProcedure.mutation(async ({ ctx }) => {
+    const { id: currentUserId } = ctx.session.user;
+
+    const updatedUser = await ctx.prisma.user.update({
+      where: { id: currentUserId },
+      data: { likes: { set: [] } },
+    });
+
+    return updatedUser;
+  }),
 });
