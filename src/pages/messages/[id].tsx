@@ -45,6 +45,9 @@ const Messages = ({ id }: { id: string }) => {
             <Close />
           </button>
         </div>
+        <div className="flex flex-grow items-center justify-center">
+          <h3 className="text-4xl text-white">Start the conversation!</h3>
+        </div>
         <div className="flex w-full justify-between border-t border-neutral-700 p-4">
           <input
             type="text"
