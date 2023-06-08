@@ -1,6 +1,6 @@
-import { Session } from "inspector";
-import type { GetServerSidePropsContext, NextPage } from "next";
-import { getSession, signOut, useSession } from "next-auth/react";
+import type { Session } from "inspector";
+import type { GetServerSidePropsContext } from "next";
+import { getSession, signOut } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
 import AuthModal from "~/components/AuthModal";

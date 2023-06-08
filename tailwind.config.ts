@@ -12,6 +12,8 @@ export default {
         "center-lg": "0 0 8px rgb(0, 0, 0, 0.15)",
       },
       maxHeight: { "116": "40rem" },
+      minHeight: { "116": "40rem" },
+      height: { "116": "40rem" },
     },
   },
   plugins: [require("daisyui")],

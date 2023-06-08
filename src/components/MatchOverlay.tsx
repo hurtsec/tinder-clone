@@ -1,6 +1,6 @@
 import ItsAMatch from "./graphics/ItsAMatch";
 import Like from "./icons/Like";
-import Close from "./icons/close";
+import Close from "./icons/Close";
 
 const MatchOverlay = ({
   handleDismissMatchOverlay,
