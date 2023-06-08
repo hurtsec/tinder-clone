@@ -63,6 +63,7 @@ const Dashboard = () => {
     onError: () => console.log("error"),
   });
   const [usersToDisplay, setUsersToDisplay] = useState<User[]>([]);
+  const [matchedCurrentCard, setMatchedCurrentCard] = useState(false);
 
   useEffect(() => {
     if (!usersToDisplay.length) return;
@@ -84,8 +85,11 @@ const Dashboard = () => {
   };
 
   const handleLike = (id: string) => {
-    if (whoLikesMe?.includes(id)) console.log("You matched!");
     mutateLikes({ id });
+    if (whoLikesMe?.includes(id)) {
+      setMatchedCurrentCard(true);
+      return;
+    }
     setUsersToDisplay((currentUsersDisplayed) => {
       return removeUserCard(currentUsersDisplayed, id);
     });
@@ -97,6 +101,13 @@ const Dashboard = () => {
     setUsersToDisplay((currentUsersDisplayed) => {
       return removeUserCard(currentUsersDisplayed, id);
     });
+  };
+
+  const handleDismissMatchOverlay = (id: string) => {
+    setMatchedCurrentCard(false);
+    setUsersToDisplay((currentUsersDisplayed) =>
+      removeUserCard(currentUsersDisplayed, id)
+    );
   };
 
   const handleResetLikes = () => mutateResetLikes();
@@ -111,8 +122,10 @@ const Dashboard = () => {
                 key={user.id}
                 user={user}
                 hidden={i !== 0}
+                matched={matchedCurrentCard}
                 handleDislike={handleDislike}
                 handleLike={handleLike}
+                handleDismissMatchOverlay={handleDismissMatchOverlay}
               />
             ))
           ) : (

@@ -6,11 +6,20 @@ import MatchOverlay from "./MatchOverlay";
 type Props = {
   user: User;
   hidden: boolean;
+  matched: boolean;
   handleDislike: (id: string) => void;
   handleLike: (id: string) => void;
+  handleDismissMatchOverlay: (id: string) => void;
 };
 
-const UserCard = ({ user, hidden, handleDislike, handleLike }: Props) => {
+const UserCard = ({
+  user,
+  hidden,
+  matched,
+  handleDislike,
+  handleLike,
+  handleDismissMatchOverlay,
+}: Props) => {
   return (
     <div
       className={`relative flex flex-col justify-end overflow-hidden rounded-2xl bg-cover bg-center shadow-center-lg shadow-neutral-400 ${
@@ -43,7 +52,11 @@ const UserCard = ({ user, hidden, handleDislike, handleLike }: Props) => {
           <Like />
         </button>
       </div>
-      <MatchOverlay />
+      {matched && (
+        <MatchOverlay
+          handleDismissMatchOverlay={() => handleDismissMatchOverlay(user.id)}
+        />
+      )}
     </div>
   );
 };

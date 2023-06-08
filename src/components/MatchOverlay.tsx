@@ -2,10 +2,17 @@ import ItsAMatch from "./graphics/ItsAMatch";
 import Like from "./icons/Like";
 import Close from "./icons/close";
 
-const MatchOverlay = () => {
+const MatchOverlay = ({
+  handleDismissMatchOverlay,
+}: {
+  handleDismissMatchOverlay: () => void;
+}) => {
   return (
     <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-between bg-gradient-to-t from-black to-transparent py-10">
-      <button className="absolute right-0 top-0 p-3 text-neutral-700">
+      <button
+        className="absolute right-0 top-0 p-3 text-neutral-700"
+        onClick={handleDismissMatchOverlay}
+      >
         <Close />
       </button>
       <ItsAMatch />
