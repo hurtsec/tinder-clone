@@ -1,6 +1,7 @@
 import type { User } from "@prisma/client";
 import Dislike from "./icons/Dislike";
 import Like from "./icons/Like";
+import MatchOverlay from "./MatchOverlay";
 
 type Props = {
   user: User;
@@ -12,7 +13,7 @@ type Props = {
 const UserCard = ({ user, hidden, handleDislike, handleLike }: Props) => {
   return (
     <div
-      className={`flex flex-col justify-end overflow-hidden rounded-2xl bg-cover bg-center shadow-center-lg shadow-neutral-400 ${
+      className={`relative flex flex-col justify-end overflow-hidden rounded-2xl bg-cover bg-center shadow-center-lg shadow-neutral-400 ${
         hidden ? "hidden" : ""
       }`}
       style={{
@@ -42,6 +43,7 @@ const UserCard = ({ user, hidden, handleDislike, handleLike }: Props) => {
           <Like />
         </button>
       </div>
+      <MatchOverlay />
     </div>
   );
 };
