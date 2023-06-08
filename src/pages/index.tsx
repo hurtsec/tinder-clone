@@ -1,14 +1,27 @@
-import { type NextPage } from "next";
-import { signOut, useSession } from "next-auth/react";
+import { Session } from "inspector";
+import type { GetServerSidePropsContext, NextPage } from "next";
+import { getSession, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
 import AuthModal from "~/components/AuthModal";
 import Nav from "~/components/Nav";
 
-const Home: NextPage = () => {
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const session = await getSession(ctx);
+  if (session) {
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: false,
+      },
+    };
+  }
+  return { props: { session } };
+};
+
+const Home = ({ session }: { session: Session }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
-  const { data: session } = useSession();
   const handleHRBButtonClick = () => {
     console.log("Clicked");
     if (session) return signOut();
