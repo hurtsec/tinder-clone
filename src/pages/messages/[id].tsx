@@ -13,6 +13,7 @@ import {
 } from "~/common/validation/user";
 import ProfileCard from "~/components/ProfileCard";
 import Close from "~/components/icons/Close";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 dayjs.extend(relativeTime);
 
@@ -25,6 +26,20 @@ const Messages = ({ id }: { id: string }) => {
   const { data: whoAmI } = api.users.whoAmI.useQuery();
   const { data: user } = api.users.get.useQuery({ id });
   const { data: matches } = api.match.getMatches.useQuery();
+  const { mutate } = api.messages.send.useMutation({
+    onSuccess: (data) => console.log("data :>> ", data),
+    onError: () => console.log("error"),
+  });
+  const { register, handleSubmit, watch, reset } = useForm<{
+    message: string;
+  }>();
+  const message = watch("message");
+
+  const onSubmit: SubmitHandler<{ message: string }> = (data) => {
+    if (!user) return;
+    mutate({ recipientId: user.id, ...data });
+    reset({ message: "" });
+  };
 
   return (
     <div className="flex h-full w-full">
@@ -53,8 +68,18 @@ const Messages = ({ id }: { id: string }) => {
             type="text"
             className="w-full bg-transparent font-semibold text-neutral-300 focus-visible:outline-none"
             placeholder="Type a message"
+            {...register("message", {
+              maxLength: {
+                value: 1024,
+                message: "Messages must be less than 1024 characters.",
+              },
+            })}
           />
-          <button className="rounded-3xl bg-neutral-800 px-4 py-2 font-semibold uppercase text-neutral-500">
+          <button
+            disabled={!message}
+            className="rounded-3xl bg-gradient-to-bl from-orange-700 to-red-700 px-4 py-2 font-semibold uppercase text-white hover:from-red-700 hover:to-orange-700 disabled:from-neutral-800 disabled:to-neutral-800 disabled:text-neutral-500"
+            onClick={handleSubmit(onSubmit)}
+          >
             Send
           </button>
         </div>
